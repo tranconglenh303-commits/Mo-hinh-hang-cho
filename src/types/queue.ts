@@ -1,6 +1,6 @@
 export type QueueDiscipline = 'FIFO' | 'LIFO' | 'PRIORITY';
 export type ServiceDistribution = 'exponential' | 'deterministic';
-export type KendallModelType = 'M/M/1' | 'M/M/c' | 'M/M/1/K' | 'M/G/1';
+export type KendallModelType = 'M/M/1' | 'M/M/k' | 'M/G/1' | 'M/D/1';
 
 export interface Customer {
   id: number;
