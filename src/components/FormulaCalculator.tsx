@@ -250,30 +250,80 @@ export const FormulaCalculator: React.FC = () => {
             )}
 
             <div className="mt-5 pt-4 border-t border-slate-800">
-              <span className="text-xs font-semibold text-slate-400 block mb-2">Chỉ Số Cân Bằng (Steady-State):</span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">Hệ số sử dụng (ρ)</span>
-                  <span className={`font-mono font-bold text-sm ${metrics.isStable ? 'text-cyan-300' : 'text-rose-400'}`}>
-                    {(metrics.rho * 100).toFixed(1)}%
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-xs font-semibold text-slate-300">6 Chỉ Số Cân Bằng Chuẩn (Steady-State):</span>
+                <span className="text-[11px] font-mono text-cyan-400 font-bold">
+                  ρ = {(metrics.rho * 100).toFixed(1)}%
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-2 text-xs">
+                {/* 1. P0 */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>1. Xác suất rảnh</span>
+                    <span className="font-mono text-cyan-400 font-bold text-[11px]">P₀</span>
+                  </div>
+                  <span className={`font-mono font-bold text-sm ${metrics.isStable ? 'text-emerald-300' : 'text-slate-500'}`}>
+                    {metrics.isStable ? `${(metrics.P0 * 100).toFixed(1)}%` : '0%'}
                   </span>
                 </div>
-                <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">Khách trong hàng (Lq)</span>
+
+                {/* 2. Lq */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>2. Khách trong hàng</span>
+                    <span className="font-mono text-cyan-400 font-bold text-[11px]">L_q</span>
+                  </div>
                   <span className="font-mono font-bold text-sm text-white">
-                    {metrics.isStable ? metrics.Lq.toFixed(2) : '∞'}
+                    {metrics.isStable ? `${metrics.Lq.toFixed(2)}` : '∞'}
+                    <span className="text-[10px] text-slate-500 font-normal ml-1">khách</span>
                   </span>
                 </div>
-                <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">Toàn hệ thống (L)</span>
+
+                {/* 3. L */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>3. Toàn hệ thống</span>
+                    <span className="font-mono text-cyan-400 font-bold text-[11px]">L</span>
+                  </div>
                   <span className="font-mono font-bold text-sm text-white">
-                    {metrics.isStable ? metrics.L.toFixed(2) : '∞'}
+                    {metrics.isStable ? `${metrics.L.toFixed(2)}` : '∞'}
+                    <span className="text-[10px] text-slate-500 font-normal ml-1">khách</span>
                   </span>
                 </div>
-                <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">TG chờ hàng (Wq)</span>
+
+                {/* 4. Wq */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>4. TG chờ hàng</span>
+                    <span className="font-mono text-amber-400 font-bold text-[11px]">W_q</span>
+                  </div>
                   <span className="font-mono font-bold text-sm text-amber-300">
-                    {metrics.isStable ? `${(metrics.Wq * 60).toFixed(1)} phút` : '∞'}
+                    {metrics.isStable ? `${(metrics.Wq * 60).toFixed(1)}` : '∞'}
+                    <span className="text-[10px] text-slate-500 font-normal ml-1">phút</span>
+                  </span>
+                </div>
+
+                {/* 5. W */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>5. TG hệ thống</span>
+                    <span className="font-mono text-emerald-400 font-bold text-[11px]">W</span>
+                  </div>
+                  <span className="font-mono font-bold text-sm text-emerald-300">
+                    {metrics.isStable ? `${(metrics.W * 60).toFixed(1)}` : '∞'}
+                    <span className="text-[10px] text-slate-500 font-normal ml-1">phút</span>
+                  </span>
+                </div>
+
+                {/* 6. Pw */}
+                <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 hover:border-slate-700 transition-colors">
+                  <div className="flex items-center justify-between text-slate-500 mb-0.5">
+                    <span>6. Xác suất phải chờ</span>
+                    <span className="font-mono text-purple-400 font-bold text-[11px]">P_w</span>
+                  </div>
+                  <span className={`font-mono font-bold text-sm ${metrics.isStable ? 'text-purple-300' : 'text-rose-400'}`}>
+                    {metrics.isStable ? `${(metrics.Pw * 100).toFixed(1)}%` : '100%'}
                   </span>
                 </div>
               </div>
@@ -285,10 +335,10 @@ export const FormulaCalculator: React.FC = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-cyan-400" />
-              <span>Các Giai Đoạn Tính Toán Chi Tiết Cho {selectedModel}</span>
+              <span>Đủ 6 Phép Tính Cho {selectedModel} (Thứ tự: P₀ → Lq → L → Wq → W → Pw)</span>
             </h3>
-            <span className="text-xs font-mono text-slate-400">
-              {steps.length} Giai đoạn chuẩn hóa
+            <span className="text-xs font-mono text-cyan-400 bg-cyan-950/80 px-2.5 py-1 rounded border border-cyan-800/80">
+              {steps.length} phép tính chuẩn xác 100%
             </span>
           </div>
 
