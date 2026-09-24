@@ -1,0 +1,6 @@
+{
+  "name": "Mô Hình Hàng Chờ - Lý Thuyết & Mô Phỏng Tương Tác",
+  "description": "Nền tảng trực quan khám phá Lý thuyết Hàng chờ (Queueing Theory): mô phỏng hoạt động thời gian thực, công thức tính toán từng bước (M/M/1, M/M/c, M/M/1/K, M/G/1), tối ưu hóa chi phí và ứng dụng thực tiễn.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
