@@ -1,27 +1,49 @@
 import React, { useState } from 'react';
 import { KendallModelType } from '../types/queue';
-import { calculateMM1, calculateMMC, calculateMM1K, calculateMG1, getStepByStepCalculation } from '../utils/mathFormulas';
+import { calculateMM1, calculateMMC, calculateMD1, calculateMG1, getStepByStepCalculation } from '../utils/mathFormulas';
 import { MathView } from './MathView';
-import { BookOpen, Layers } from 'lucide-react';
+import { BookOpen, Layers, Server } from 'lucide-react';
 
 export const FormulaCalculator: React.FC = () => {
   const [selectedModel, setSelectedModel] = useState<KendallModelType>('M/M/1');
 
   const [lambda, setLambda] = useState<number>(8);
   const [mu, setMu] = useState<number>(10);
-  const [c, setC] = useState<number>(2);
-  const [K, setK] = useState<number>(5);
+  const [k, setK] = useState<number>(2);
   const [sigma, setSigma] = useState<number>(0.05);
 
   const metrics = selectedModel === 'M/M/1'
     ? calculateMM1(lambda, mu)
-    : selectedModel === 'M/M/c'
-      ? calculateMMC(lambda, mu, c)
-      : selectedModel === 'M/M/1/K'
-        ? calculateMM1K(lambda, mu, K)
-        : calculateMG1(lambda, mu, sigma);
+    : selectedModel === 'M/M/k'
+      ? calculateMMC(lambda, mu, k)
+      : selectedModel === 'M/G/1'
+        ? calculateMG1(lambda, mu, sigma)
+        : calculateMD1(lambda, mu);
 
-  const steps = getStepByStepCalculation(selectedModel, lambda, mu, c, K, sigma);
+  const steps = getStepByStepCalculation(selectedModel, lambda, mu, k, sigma);
+
+  const modelDescriptions: Record<KendallModelType, { title: string; subtitle: string; tag: string }> = {
+    'M/M/1': {
+      title: 'M/M/1: Lượt đến Poisson, thời gian phục vụ Mũ, 1 server',
+      subtitle: 'Mô hình hàng chờ đơn kênh cơ bản nhất trong lý thuyết xếp hàng.',
+      tag: '1 Server · Phục vụ ngẫu nhiên',
+    },
+    'M/M/k': {
+      title: 'M/M/k: Lượt đến Poisson, thời gian phục vụ Mũ, nhiều server',
+      subtitle: 'Mô hình đa server song song cùng phục vụ 1 hàng đợi chung (Erlang-C).',
+      tag: 'Nhiều Server (k) · Chia tải song song',
+    },
+    'M/G/1': {
+      title: 'M/G/1: Lượt đến Poisson, thời gian phục vụ tổng quát, 1 server',
+      subtitle: 'Thời gian phục vụ tuân theo phân phối xác suất bất kỳ với độ lệch chuẩn σ (Pollaczek-Khinchine).',
+      tag: '1 Server · Phân phối tổng quát (σ)',
+    },
+    'M/D/1': {
+      title: 'M/D/1: Lượt đến Poisson, thời gian phục vụ cố định, 1 server',
+      subtitle: 'Thời gian phục vụ không đổi (Deterministic, σ = 0), hàng chờ Lq giảm 50% so với M/M/1.',
+      tag: '1 Server · Thời gian cố định (σ = 0)',
+    },
+  };
 
   return (
     <section id="formulas" className="py-8">
@@ -31,10 +53,13 @@ export const FormulaCalculator: React.FC = () => {
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-1">
             Máy Tính & Diễn Giải Chi Tiết Công Thức Hàng Chờ
           </h2>
+          <p className="text-xs text-slate-400 mt-1">
+            {modelDescriptions[selectedModel].title}
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 bg-slate-900 border border-slate-800 p-1.5 rounded-lg">
-          {(['M/M/1', 'M/M/c', 'M/M/1/K', 'M/G/1'] as KendallModelType[]).map((m) => (
+          {(['M/M/1', 'M/M/k', 'M/G/1', 'M/D/1'] as KendallModelType[]).map((m) => (
             <button
               key={m}
               onClick={() => setSelectedModel(m)}
@@ -47,6 +72,33 @@ export const FormulaCalculator: React.FC = () => {
               {m}
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Model Definition Banner */}
+      <div className="rounded-xl border border-cyan-500/30 bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-950 p-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center shrink-0">
+              <Server className="w-5 h-5 text-cyan-300" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800">
+                  {selectedModel}
+                </span>
+                <h4 className="text-sm font-semibold text-white">
+                  {modelDescriptions[selectedModel].title}
+                </h4>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                {modelDescriptions[selectedModel].subtitle}
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-mono px-2.5 py-1 rounded bg-slate-950 border border-slate-800 text-slate-300 shrink-0 self-start sm:self-auto">
+            {modelDescriptions[selectedModel].tag}
+          </span>
         </div>
       </div>
 
@@ -92,7 +144,7 @@ export const FormulaCalculator: React.FC = () => {
 
             <div className="mb-4">
               <label className="text-xs text-slate-300 font-medium block mb-1.5">
-                Tốc độ đến (<MathView formula="\lambda" />): khách/giờ (hoặc khách/phút)
+                Tốc độ đến (<MathView formula="\lambda" />): khách/giờ (Poisson)
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -117,7 +169,7 @@ export const FormulaCalculator: React.FC = () => {
 
             <div className="mb-4">
               <label className="text-xs text-slate-300 font-medium block mb-1.5">
-                Tốc độ phục vụ mỗi quầy (<MathView formula="\mu" />): khách/giờ
+                Tốc độ phục vụ mỗi server (<MathView formula="\mu" />): khách/giờ
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -140,42 +192,26 @@ export const FormulaCalculator: React.FC = () => {
               </div>
             </div>
 
-            {selectedModel === 'M/M/c' && (
+            {selectedModel === 'M/M/k' && (
               <div className="mb-4">
                 <label className="text-xs text-slate-300 font-medium block mb-1.5">
-                  Số lượng quầy phục vụ song song (c)
+                  Số lượng server phục vụ song song (k)
                 </label>
                 <div className="flex items-center gap-2">
                   {[2, 3, 4, 5, 6].map((num) => (
                     <button
                       key={num}
-                      onClick={() => setC(num)}
+                      onClick={() => setK(num)}
                       className={`flex-1 py-1.5 text-xs font-mono font-bold rounded-lg border transition-colors cursor-pointer ${
-                        c === num
+                        k === num
                           ? 'bg-purple-600/30 border-purple-500 text-purple-200'
                           : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
                       }`}
                     >
-                      {num}
+                      k = {num}
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {selectedModel === 'M/M/1/K' && (
-              <div className="mb-4">
-                <label className="text-xs text-slate-300 font-medium block mb-1.5">
-                  Dung lượng tối đa cả hệ thống (K = hàng chờ + 1 quầy)
-                </label>
-                <input
-                  type="number"
-                  min={2}
-                  max={30}
-                  value={K}
-                  onChange={(e) => setK(Math.max(2, parseInt(e.target.value) || 2))}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono text-white focus:outline-none focus:border-cyan-400"
-                />
               </div>
             )}
 
@@ -183,14 +219,8 @@ export const FormulaCalculator: React.FC = () => {
               <div className="mb-4">
                 <div className="flex items-center justify-between text-xs mb-1.5">
                   <label className="text-slate-300 font-medium">
-                    Độ lệch chuẩn thời gian phục vụ (<MathView formula="\sigma" />)
+                    Độ lệch chuẩn thời gian phục vụ (<MathView formula="\sigma" />): giờ
                   </label>
-                  <button
-                    onClick={() => setSigma(0)}
-                    className="text-[10px] text-cyan-400 hover:underline cursor-pointer"
-                  >
-                    Đặt = 0 (M/D/1)
-                  </button>
                 </div>
                 <input
                   type="number"
@@ -200,6 +230,22 @@ export const FormulaCalculator: React.FC = () => {
                   onChange={(e) => setSigma(Math.max(0, parseFloat(e.target.value) || 0))}
                   className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-mono text-white focus:outline-none focus:border-cyan-400"
                 />
+                <span className="text-[11px] text-slate-400 mt-1 block">
+                  Phương sai tương ứng: <span className="font-mono text-cyan-300 font-bold">{(sigma * sigma).toFixed(5)}</span>
+                </span>
+              </div>
+            )}
+
+            {selectedModel === 'M/D/1' && (
+              <div className="mb-4 p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
+                <div className="flex items-center justify-between text-slate-300 mb-1">
+                  <span>Thời gian phục vụ cố định (1/μ):</span>
+                  <span className="font-mono text-cyan-300 font-bold">{((1 / mu) * 60).toFixed(1)} phút/khách</span>
+                </div>
+                <div className="flex items-center justify-between text-slate-400 text-[11px]">
+                  <span>Phương sai σ²:</span>
+                  <span className="font-mono text-emerald-400 font-bold">0 (Không dao động)</span>
+                </div>
               </div>
             )}
 
@@ -227,7 +273,7 @@ export const FormulaCalculator: React.FC = () => {
                 <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
                   <span className="text-slate-500 block">TG chờ hàng (Wq)</span>
                   <span className="font-mono font-bold text-sm text-amber-300">
-                    {metrics.isStable ? `${metrics.Wq.toFixed(3)} ĐV` : '∞'}
+                    {metrics.isStable ? `${(metrics.Wq * 60).toFixed(1)} phút` : '∞'}
                   </span>
                 </div>
               </div>
