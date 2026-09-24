@@ -18,6 +18,8 @@ export const Hero: React.FC = () => {
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight max-w-4xl" style={{ textWrap: 'balance' }}>
           Mô Hình Hàng Chờ: Bản Chất Vận Hành, Công Thức Từng Giai Đoạn & Ứng Dụng Thực Tiễn
+          Nhóm 6
+          GV: TS. Chu Nguyễn Mộng Ngọc
         </h1>
 
         <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-3xl leading-relaxed">
