@@ -29,19 +29,28 @@ export const Hero: React.FC = () => {
 
   {/* Thông tin nhóm và giảng viên */}
   <div className="mt-6 flex flex-col gap-2 border-l-4 border-cyan-400 pl-4">
-    <p className="text-lg sm:text-xl font-bold text-cyan-400">
-      NHÓM 6
-    </p>
+  <p className="text-lg sm:text-xl font-bold text-cyan-400">
+    NHÓM 6
+  </p>
 
-    <p className="text-base sm:text-lg text-slate-300">
-      <span className="font-medium text-slate-400">
-        Giảng viên hướng dẫn:
-      </span>
-      <span className="block sm:inline sm:ml-2 font-semibold text-white">
-        TS. Chu Nguyễn Mộng Ngọc
-      </span>
-    </p>
-  </div>
+  <p className="text-base sm:text-lg text-slate-300">
+    <span className="font-medium text-slate-400">
+      Môn học:
+    </span>
+    <span className="block sm:inline sm:ml-2 font-semibold text-white">
+      Phân tích định lượng trong kinh doanh
+    </span>
+  </p>
+
+  <p className="text-base sm:text-lg text-slate-300">
+    <span className="font-medium text-slate-400">
+      Giảng viên hướng dẫn:
+    </span>
+    <span className="block sm:inline sm:ml-2 font-semibold text-white">
+      TS. Chu Nguyễn Mộng Ngọc
+    </span>
+  </p>
+</div>
 
   {/* Phần mô tả */}
   <p className="mt-7 text-base sm:text-lg text-slate-300 max-w-3xl leading-relaxed">
